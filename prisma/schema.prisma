@@ -9,19 +9,110 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  OWNER
+  TENANT
+}
+
+enum TenantType {
+  OTHERS
+  BACHELOR
+  FAMILY
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  CANCEL
+}
+
+enum HouseStatus {
+  AVAILABLE
+  BOOKED
+}
+
+enum HouseCategory {
+  FLAT
+  SINGLE_ROOM
+  HOSTEL
+  SHOP
+  OFFICE
+  GARAGE
+}
+
 model User {
-  id         String      @id @default(uuid())
-  userName   String?      
-  verified   Boolean     @default(false)
-  firstName  String?
-  lastName   String?
-  email      String      @unique
-  phone      String?     @unique
-  address    String?
-  photo      String?
-  gender     String?
-  password   String
-  token      String?
-  nid        String?
+  id             String    @id @default(uuid())
+  role           Role
+  name           String
+  address        String
+  email          String    @unique
+  phone          String    @unique
+  ownHouses      House[]
+  tenantRequests Request[] @relation("tenant_info")
+  ownerRequests  Request[] @relation("owner_info")
+
   @@map("users")
+}
+
+model HouseImage {
+  id        String   @id @default(uuid())
+  url       String
+  house     House    @relation(fields: [houseId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  houseId   String
+
+  @@map("house_image")
+}
+
+model House {
+  id               String        @id @default(uuid())
+  houseName        String
+  address          String
+  category         HouseCategory
+  tenantType       TenantType
+  quantity         Int           @default(1)
+  rentFee          Float
+  minBookingCharge Float
+  details          String?
+  images           HouseImage[]
+  video            String?
+  status           HouseStatus   @default(AVAILABLE)
+  houseOwner       User          @relation(fields: [ownerId], references: [id])
+  ownerId          String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  Request          Request[]
+  Feedback         Feedback[]
+
+  @@map("houses")
+}
+
+model Request {
+  id            String        @id @default(uuid())
+  requestStatus RequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  house     House    @relation(fields: [houseId], references: [id])
+  houseId   String
+  owner     User     @relation("owner_info", fields: [ownerId], references: [id])
+  ownerId   String
+  tenant    User     @relation("tenant_info", fields: [tenantId], references: [id])
+  tenantId  String
+
+  @@map("requests")
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  rating    Float
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  house     House    @relation(fields: [houseId], references: [id])
+  houseId   String
+
+  @@map("feedbacks")
 }
