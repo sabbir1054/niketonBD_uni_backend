@@ -34,6 +34,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.7",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/multer": "^1.4.12",
     "@types/uuid": "^9.0.8",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
@@ -46,10 +47,20 @@
     "husky": "^9.1.7",
     "jsonwebtoken": "^9.0.2",
     "lint-staged": "^15.2.5",
+    "multer": "^1.4.5-lts.2",
     "prettier": "^3.3.0",
     "prisma": "^6.4.1",
     "typescript": "^5.4.5",
     "uuid": "^9.0.1",
     "zod": "^3.23.8"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sabbir1054/niketonBD_uni_backend.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sabbir1054/niketonBD_uni_backend/issues"
+  },
+  "homepage": "https://github.com/sabbir1054/niketonBD_uni_backend#readme"
 }
