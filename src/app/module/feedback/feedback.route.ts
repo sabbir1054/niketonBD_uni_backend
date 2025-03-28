@@ -27,4 +27,9 @@ router.delete(
   auth(ENUM_USER_ROLE.TENANT),
   FeedbackController.deleteFeedback,
 );
+router.patch(
+  '/updateFeedback/:id',
+  auth(ENUM_USER_ROLE.TENANT),
+  FeedbackController.deleteFeedback,
+);
 export const FeedbackRoutes = router;
