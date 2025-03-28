@@ -4,6 +4,9 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { HouseServices } from './house.services';
+import { paginationFields } from '../../../constants/paginationFields';
+import { houseFilterableFields } from './house.constant';
+import pick from '../../../shared/pick';
 
 const createNew = catchAsync(async (req: Request, res: Response) => {
   const result = await HouseServices.createNew(req);
@@ -28,7 +31,9 @@ const deleteHouse = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllHouse = catchAsync(async (req: Request, res: Response) => {
-  const result = await HouseServices.getAllHouses();
+  const filters = pick(req.query, houseFilterableFields);
+  const options = pick(req.query, paginationFields);
+  const result = await HouseServices.getAllHouses(filters, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
