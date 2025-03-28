@@ -22,5 +22,9 @@ router.get(
   FeedbackController.getTenantAllFeedback,
 );
 router.get('/details/:id', FeedbackController.feedbackDetails);
-
+router.delete(
+  '/delete/:id',
+  auth(ENUM_USER_ROLE.TENANT),
+  FeedbackController.deleteFeedback,
+);
 export const FeedbackRoutes = router;
