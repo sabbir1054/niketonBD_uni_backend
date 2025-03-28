@@ -47,8 +47,47 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
     message: 'Password changed successfully',
   });
 });
+
+const forgetPasswordOTPSend = catchAsync(
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
+    AuthServices.forgetPasswordOTPSend(email);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'OTP SEND TO EMAIL !',
+    });
+  },
+);
+const forgetPasswordOTPVerify = catchAsync(
+  async (req: Request, res: Response) => {
+    const { email, otp } = req.body;
+    await AuthServices.forgetPasswordOTPVerify(email, otp);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'OTP matched',
+    });
+  },
+);
+
+const forgetPasswordSetNewPassword = catchAsync(
+  async (req: Request, res: Response) => {
+    const { email, otp, newPassword } = req.body;
+    await AuthServices.forgetPasswordSetNewPassword(email, otp, newPassword);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Successfully password changed',
+    });
+  },
+);
+
 export const AuthController = {
   userRegistration,
   userLogin,
   changePassword,
+  forgetPasswordOTPSend,
+  forgetPasswordOTPVerify,
+  forgetPasswordSetNewPassword,
 };
