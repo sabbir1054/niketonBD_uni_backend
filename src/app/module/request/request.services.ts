@@ -34,8 +34,22 @@ const getOwnerAllRequest = async (userId: string) => {
   const result = await prisma.request.findMany({ where: { ownerId: userId } });
   return result;
 };
+const requestDetails = async (id: string, userId: string) => {
+  const result = await prisma.request.findUnique({ where: { id: id } });
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Request info not found');
+  }
+  if (result.ownerId !== userId && result.tenantId !== userId) {
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      'You are not able to see others booking request',
+    );
+  }
+  return result;
+};
 
 export const RequestServices = {
   createRequest,
   getOwnerAllRequest,
+  requestDetails,
 };
