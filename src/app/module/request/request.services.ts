@@ -1,6 +1,9 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
+import { requestSearchableFields } from './request.constant';
 
 const createRequest = async (tenantId: string, houseId: string) => {
   const isHouseExist = await prisma.house.findUnique({
@@ -26,22 +29,136 @@ const createRequest = async (tenantId: string, houseId: string) => {
   return result;
 };
 
-const getOwnerAllRequest = async (userId: string) => {
+const getOwnerAllRequest = async (
+  userId: string,
+  filters: any,
+  options: IPaginationOptions,
+) => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+  const { searchTerm, ...filtersData } = filters;
+  const andConditions = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: requestSearchableFields.map((field: any) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filtersData).length) {
+    const conditions = Object.entries(filtersData).map(([field, value]) => ({
+      [field]: value,
+    }));
+    andConditions.push({ AND: conditions });
+  }
   const isUserExist = await prisma.user.findUnique({ where: { id: userId } });
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User info not found');
   }
-  const result = await prisma.request.findMany({ where: { ownerId: userId } });
-  return result;
+
+  //user id filter
+  andConditions.push({ ownerId: userId });
+
+  const whereConditions =
+    andConditions.length > 0 ? { AND: andConditions } : { ownerId: userId };
+  const result = await prisma.request.findMany({
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: 'desc',
+          },
+    include: {
+      owner: true,
+      tenant: true,
+      house: { include: { images: true } },
+    },
+  });
+  const total = await prisma.request.count({
+    where: whereConditions,
+  });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
 };
-const getTenantAllRequest = async (userId: string) => {
+
+const getTenantAllRequest = async (
+  userId: string,
+  filters: any,
+  options: IPaginationOptions,
+) => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+  const { searchTerm, ...filtersData } = filters;
+  const andConditions = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: requestSearchableFields.map((field: any) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filtersData).length) {
+    const conditions = Object.entries(filtersData).map(([field, value]) => ({
+      [field]: value,
+    }));
+    andConditions.push({ AND: conditions });
+  }
+
   const isUserExist = await prisma.user.findUnique({ where: { id: userId } });
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User info not found');
   }
-  const result = await prisma.request.findMany({ where: { tenantId: userId } });
-  return result;
+  //user id filter
+  andConditions.push({ tenantId: userId });
+
+  const whereConditions =
+    andConditions.length > 0 ? { AND: andConditions } : { tenantId: userId };
+  const result = await prisma.request.findMany({
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: 'desc',
+          },
+    include: {
+      owner: true,
+      tenant: true,
+      house: { include: { images: true } },
+    },
+  });
+  const total = await prisma.request.count({
+    where: whereConditions,
+  });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
 };
+
 const requestDetails = async (id: string, userId: string) => {
   const result = await prisma.request.findUnique({ where: { id: id } });
   if (!result) {
