@@ -56,10 +56,22 @@ const deleteFeedback = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const updateFeedback = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { id: userId } = req.user as any;
+  const result = await FeedbackService.updateFeedback(id, userId, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Feedback update Successfully',
+    data: result,
+  });
+});
 export const FeedbackController = {
   createFeedback,
   getOwnersAllFeedback,
   getTenantAllFeedback,
   feedbackDetails,
   deleteFeedback,
+  updateFeedback,
 };
