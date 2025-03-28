@@ -72,9 +72,25 @@ const feedbackDetails = async (id: string) => {
   });
   return result;
 };
+
+const deleteFeedback = async (id: string, userId: string) => {
+  const isFeedbackExist = await prisma.feedback.findUnique({
+    where: { id: id },
+  });
+  if (!isFeedbackExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Feedback not found');
+  }
+  if (isFeedbackExist.tenantId !== userId) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Feedback tenant not match');
+  }
+  const result = await prisma.feedback.delete({ where: { id: id } });
+  return result;
+};
+
 export const FeedbackService = {
   giveFeedback,
   getOwnersAllFeedback,
   getTenantAllFeedback,
   feedbackDetails,
+  deleteFeedback,
 };
