@@ -10,5 +10,9 @@ router.post(
   auth(ENUM_USER_ROLE.TENANT),
   FeedbackController.createFeedback,
 );
-
+router.get(
+  '/ownerFeedback',
+  auth(ENUM_USER_ROLE.OWNER),
+  FeedbackController.getOwnersAllFeedback,
+);
 export const FeedbackRoutes = router;
