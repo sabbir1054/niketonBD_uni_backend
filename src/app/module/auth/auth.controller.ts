@@ -36,85 +36,19 @@ const userLogin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// const changePassword = catchAsync(async (req: Request, res: Response) => {
-//   const user = req.user;
-//   const { ...passwordData } = req.body;
-//   await AuthServices.changePassword(user, passwordData);
+const changePassword = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const { ...passwordData } = req.body;
+  await AuthServices.changePassword(user, passwordData);
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Password changed successfully',
-//   });
-// });
-
-// const sendEmailForVerifyAccount = catchAsync(
-//   async (req: Request, res: Response) => {
-//     const token = req.headers.authorization;
-//     const user = req.user;
-
-//     await AuthServices.sendEmailForVerifyAccount(user, token);
-//     sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'Send email for verification',
-//     });
-//   },
-// );
-
-// const verifyEmail = catchAsync(async (req: Request, res: Response) => {
-//   const { token, email } = req.params;
-//   await AuthServices.verifyEmail(email, token);
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Verification Done',
-//   });
-// });
-
-// const forgetPasswordOTPSend = catchAsync(
-//   async (req: Request, res: Response) => {
-//     const { email } = req.body;
-//     AuthServices.forgetPasswordOTPSend(email);
-//     sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'OTP SEND TO EMAIL !',
-//     });
-//   },
-// );
-
-// const forgetPasswordOTPVerify = catchAsync(
-//   async (req: Request, res: Response) => {
-//     const { email, otp } = req.body;
-//     await AuthServices.forgetPasswordOTPVerify(email, otp);
-//     sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'OTP matched',
-//     });
-//   },
-// );
-
-// const forgetPasswordSetNewPassword = catchAsync(
-//   async (req: Request, res: Response) => {
-//     const { email, otp, newPassword } = req.body;
-//     await AuthServices.forgetPasswordSetNewPassword(email, otp, newPassword);
-//     sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'Successfully password changed',
-//     });
-//   },
-// );
-
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password changed successfully',
+  });
+});
 export const AuthController = {
   userRegistration,
   userLogin,
-  // changePassword,
-  // sendEmailForVerifyAccount,
-  // verifyEmail,
-  // forgetPasswordOTPSend,
-  // forgetPasswordOTPVerify,
-  // forgetPasswordSetNewPassword,
+  changePassword,
 };
