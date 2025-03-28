@@ -1,21 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `firstName` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `gender` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `lastName` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `nid` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `password` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `photo` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `token` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `userName` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `verified` on the `users` table. All the data in the column will be lost.
-  - Added the required column `name` to the `users` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `role` to the `users` table without a default value. This is not possible if the table is not empty.
-  - Made the column `phone` on table `users` required. This step will fail if there are existing NULL values in that column.
-  - Made the column `address` on table `users` required. This step will fail if there are existing NULL values in that column.
-
-*/
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('OWNER', 'TENANT');
 
@@ -31,20 +13,20 @@ CREATE TYPE "HouseStatus" AS ENUM ('AVAILABLE', 'BOOKED');
 -- CreateEnum
 CREATE TYPE "HouseCategory" AS ENUM ('FLAT', 'SINGLE_ROOM', 'HOSTEL', 'SHOP', 'OFFICE', 'GARAGE');
 
--- AlterTable
-ALTER TABLE "users" DROP COLUMN "firstName",
-DROP COLUMN "gender",
-DROP COLUMN "lastName",
-DROP COLUMN "nid",
-DROP COLUMN "password",
-DROP COLUMN "photo",
-DROP COLUMN "token",
-DROP COLUMN "userName",
-DROP COLUMN "verified",
-ADD COLUMN     "name" TEXT NOT NULL,
-ADD COLUMN     "role" "Role" NOT NULL,
-ALTER COLUMN "phone" SET NOT NULL,
-ALTER COLUMN "address" SET NOT NULL;
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "role" "Role" NOT NULL,
+    "name" TEXT NOT NULL,
+    "photo" TEXT,
+    "password" TEXT NOT NULL,
+    "address" TEXT,
+    "email" TEXT NOT NULL,
+    "phone" TEXT,
+    "otp" TEXT,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "house_image" (
@@ -98,9 +80,16 @@ CREATE TABLE "feedbacks" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "houseId" TEXT NOT NULL,
+    "tenantId" TEXT NOT NULL,
 
     CONSTRAINT "feedbacks_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
 
 -- AddForeignKey
 ALTER TABLE "house_image" ADD CONSTRAINT "house_image_houseId_fkey" FOREIGN KEY ("houseId") REFERENCES "houses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -119,3 +108,6 @@ ALTER TABLE "requests" ADD CONSTRAINT "requests_tenantId_fkey" FOREIGN KEY ("ten
 
 -- AddForeignKey
 ALTER TABLE "feedbacks" ADD CONSTRAINT "feedbacks_houseId_fkey" FOREIGN KEY ("houseId") REFERENCES "houses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "feedbacks" ADD CONSTRAINT "feedbacks_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
