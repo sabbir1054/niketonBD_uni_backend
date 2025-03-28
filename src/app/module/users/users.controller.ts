@@ -4,6 +4,17 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { UsersServices } from './users.services';
 
+const updateUserProfile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await UsersServices.updateUserProfile(req, next);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'User updated ',
+      data: result,
+    });
+  },
+);
 
 const getMyProfile = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -19,5 +30,6 @@ const getMyProfile = catchAsync(
 );
 
 export const UsersController = {
+  updateUserProfile,
   getMyProfile,
 };
