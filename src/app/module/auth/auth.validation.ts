@@ -33,7 +33,7 @@ const makeSuperAdminZodSchema = z.object({
 });
 const makeAdminZodSchema = z.object({
   body: z.object({
-    userName: z.string({ required_error: 'User name is required' }),
+    name: z.string({ required_error: 'User name is required' }),
     email: z.string({ required_error: 'Email is required' }),
     password: z.string({ required_error: 'Password is required' }),
     role: z.enum(['ADMIN'], { required_error: 'Role is required' }),
