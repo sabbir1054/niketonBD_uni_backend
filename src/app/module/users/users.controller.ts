@@ -28,8 +28,21 @@ const getMyProfile = catchAsync(
     });
   },
 );
+const deleteProfilePicture = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.user as any;
+    const result = await UsersServices.deleteProfilePicture(id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'User photo deleted ',
+      data: result,
+    });
+  },
+);
 
 export const UsersController = {
   updateUserProfile,
   getMyProfile,
+  deleteProfilePicture,
 };
