@@ -17,10 +17,7 @@ const createFeedback = catchAsync(async (req: Request, res: Response) => {
 });
 const getOwnersAllFeedback = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.user as any;
-  const result = await FeedbackService.getOwnersAllFeedback(
-    id,
- 
-  );
+  const result = await FeedbackService.getOwnersAllFeedback(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -38,8 +35,19 @@ const getTenantAllFeedback = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const feedbackDetails = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await FeedbackService.feedbackDetails(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Feedback retrieve Successfully',
+    data: result,
+  });
+});
 export const FeedbackController = {
   createFeedback,
   getOwnersAllFeedback,
   getTenantAllFeedback,
+  feedbackDetails,
 };

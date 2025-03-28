@@ -21,4 +21,6 @@ router.get(
   auth(ENUM_USER_ROLE.TENANT),
   FeedbackController.getTenantAllFeedback,
 );
+router.get('/details/:id', FeedbackController.feedbackDetails);
+
 export const FeedbackRoutes = router;
