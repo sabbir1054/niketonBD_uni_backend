@@ -77,8 +77,45 @@ const getMyProfile = async (id: string) => {
 
   return res;
 };
-
+const deleteProfilePicture = async (id: string) => {
+  const deletePhoto = async (photoLink: string) => {
+    // Delete the image file from the server
+    const filePath = path.join(
+      process.cwd(),
+      'uploads/userPhoto',
+      path.basename(photoLink),
+    );
+    if (fs.existsSync(filePath)) {
+      try {
+        await fs.promises.unlink(filePath); // Using fs.promises.unlink for a promise-based approach
+      } catch (err) {
+        throw new ApiError(
+          httpStatus.NOT_FOUND,
+          `Failed to delete image or database record`,
+        );
+      }
+    } else {
+      throw new ApiError(
+        httpStatus.NOT_FOUND,
+        'Image not found in the directory',
+      );
+    }
+  };
+  const isUserExist = await prisma.user.findUnique({ where: { id: id } });
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not exist');
+  }
+  if (!isUserExist.photo) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'No image found');
+  }
+  const result = await prisma.user.update({
+    where: { id: id },
+    data: { photo: '' },
+  });
+  return result;
+};
 export const UsersServices = {
   updateUserProfile,
   getMyProfile,
+  deleteProfilePicture,
 };

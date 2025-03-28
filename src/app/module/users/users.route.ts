@@ -66,4 +66,10 @@ router.get(
   auth(ENUM_USER_ROLE.OWNER, ENUM_USER_ROLE.TENANT),
   UsersController.getMyProfile,
 );
+
+router.delete(
+  '/deleteProfilePicture',
+  auth(ENUM_USER_ROLE.OWNER, ENUM_USER_ROLE.TENANT),
+  UsersController.deleteProfilePicture,
+);
 export const UsersRoutes = router;
