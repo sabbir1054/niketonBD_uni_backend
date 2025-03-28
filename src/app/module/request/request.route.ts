@@ -10,5 +10,9 @@ router.post(
   auth(ENUM_USER_ROLE.TENANT),
   RequestController.createRequest,
 );
-
+router.get(
+  '/details/:id',
+  auth(ENUM_USER_ROLE.OWNER, ENUM_USER_ROLE.TENANT),
+  RequestController.requestDetails,
+);
 export const RequestRoutes = router;
