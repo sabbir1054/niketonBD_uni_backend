@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { paginationFields } from '../../../constants/paginationFields';
 import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
 import { RequestServices } from './request.services';
+import { requestFilterableFields } from './request.constant';
 
 const createRequest = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.user as any;
@@ -17,22 +20,32 @@ const createRequest = catchAsync(async (req: Request, res: Response) => {
 });
 const getOwnerAllRequest = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.user as any;
-  const result = await RequestServices.getOwnerAllRequest(id);
+  const filters = pick(req.query, requestFilterableFields);
+  const options = pick(req.query, paginationFields);
+  const result = await RequestServices.getOwnerAllRequest(id, filters, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Booking Request retrieve successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 const getTenantAllRequest = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.user as any;
-  const result = await RequestServices.getTenantAllRequest(id);
+  const filters = pick(req.query, requestFilterableFields);
+  const options = pick(req.query, paginationFields);
+  const result = await RequestServices.getTenantAllRequest(
+    id,
+    filters,
+    options,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Booking Request retrieve successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 const requestDetails = catchAsync(async (req: Request, res: Response) => {
