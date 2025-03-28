@@ -50,6 +50,7 @@ model User {
   address        String?
   email          String    @unique
   phone          String?   @unique
+  otp            String?   
   ownHouses      House[]
   tenantRequests Request[] @relation("tenant_info")
   ownerRequests  Request[] @relation("owner_info")
