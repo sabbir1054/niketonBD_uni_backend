@@ -60,8 +60,21 @@ const getTenantAllFeedback = async (userId: string) => {
   });
   return result;
 };
+const feedbackDetails = async (id: string) => {
+  const result = await prisma.feedback.findMany({
+    where: {
+      id: id,
+    },
+    include: {
+      house: { include: { houseOwner: true } },
+      tenant: true,
+    },
+  });
+  return result;
+};
 export const FeedbackService = {
   giveFeedback,
   getOwnersAllFeedback,
   getTenantAllFeedback,
+  feedbackDetails,
 };
