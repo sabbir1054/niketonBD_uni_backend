@@ -25,6 +25,15 @@ const createRequest = async (tenantId: string, houseId: string) => {
   });
   return result;
 };
+
+const getOwnerAllRequest = async (userId: string) => {
+  const isUserExist = await prisma.user.findUnique({ where: { id: userId } });
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User info not found');
+  }
+  const result = await prisma.request.findMany({ where: { ownerId: userId } });
+  return result;
+};
 const requestDetails = async (id: string, userId: string) => {
   const result = await prisma.request.findUnique({ where: { id: id } });
   if (!result) {
@@ -41,5 +50,6 @@ const requestDetails = async (id: string, userId: string) => {
 
 export const RequestServices = {
   createRequest,
-  requestDetails
+  getOwnerAllRequest,
+  requestDetails,
 };
