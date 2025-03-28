@@ -25,6 +25,16 @@ const getOwnerAllRequest = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getTenantAllRequest = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.user as any;
+  const result = await RequestServices.getTenantAllRequest(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Booking Request retrieve successfully',
+    data: result,
+  });
+});
 const requestDetails = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { id: userId } = req.user as any;
@@ -41,4 +51,5 @@ export const RequestController = {
   createRequest,
   getOwnerAllRequest,
   requestDetails,
+  getTenantAllRequest,
 };

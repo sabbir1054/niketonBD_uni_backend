@@ -16,10 +16,14 @@ router.get(
   RequestController.getOwnerAllRequest,
 );
 router.get(
+  '/tenantAllRequest',
+  auth(ENUM_USER_ROLE.TENANT),
+  RequestController.getOwnerAllRequest,
+);
+router.get(
   '/details/:id',
   auth(ENUM_USER_ROLE.OWNER, ENUM_USER_ROLE.TENANT),
   RequestController.requestDetails,
 );
-
 
 export const RequestRoutes = router;
