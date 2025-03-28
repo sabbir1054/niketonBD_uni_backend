@@ -56,9 +56,32 @@ const requestDetails = async (id: string, userId: string) => {
   return result;
 };
 
+const updateRequestStatus = async (
+  id: string,
+  userId: string,
+  status: 'ACCEPTED' | 'PENDING' | 'CANCEL',
+) => {
+  const isExist = await prisma.request.findUnique({ where: { id: id } });
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Request info not found');
+  }
+  if (isExist.ownerId !== userId && isExist.tenantId !== userId) {
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      'You are not able to see others booking request',
+    );
+  }
+  const result = await prisma.request.update({
+    where: { id: id },
+    data: { requestStatus: status },
+  });
+  return result;
+};
+
 export const RequestServices = {
   createRequest,
   getOwnerAllRequest,
   requestDetails,
   getTenantAllRequest,
+  updateRequestStatus,
 };

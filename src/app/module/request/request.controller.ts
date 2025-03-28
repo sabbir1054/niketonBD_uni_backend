@@ -46,10 +46,23 @@ const requestDetails = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const updateRequestStatus = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { id: userId } = req.user as any;
+  const { status } = req.body;
+  const result = await RequestServices.updateRequestStatus(id, userId, status);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Booking Request retrieve ',
+    data: result,
+  });
+});
 
 export const RequestController = {
   createRequest,
   getOwnerAllRequest,
   requestDetails,
+  updateRequestStatus,
   getTenantAllRequest,
 };

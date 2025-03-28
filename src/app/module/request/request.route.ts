@@ -25,5 +25,10 @@ router.get(
   auth(ENUM_USER_ROLE.OWNER, ENUM_USER_ROLE.TENANT),
   RequestController.requestDetails,
 );
+router.patch(
+  '/update/:id',
+  auth(ENUM_USER_ROLE.TENANT, ENUM_USER_ROLE.OWNER),
+  RequestController.updateRequestStatus,
+);
 
 export const RequestRoutes = router;
