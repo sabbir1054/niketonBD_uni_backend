@@ -15,7 +15,18 @@ const createRequest = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getOwnerAllRequest = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.user as any;
+  const result = await RequestServices.getOwnerAllRequest(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Booking Request retrieve successfully',
+    data: result,
+  });
+});
 
 export const RequestController = {
   createRequest,
+  getOwnerAllRequest,
 };
