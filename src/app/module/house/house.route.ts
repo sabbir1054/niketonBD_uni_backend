@@ -53,6 +53,40 @@ router.get(
   HouseController.getMyAllHouse,
 );
 
+router.patch(
+  '/addImages/:houseId',
+  auth(ENUM_USER_ROLE.OWNER),
+  FileUploadHelper.upload.array('files', 5), // Ensure 'files' matches the field name used in the form
+  async (req: Request, res: Response, next: NextFunction) => {
+    const multerReq = req as MulterRequest;
+
+    try {
+      if (multerReq.files) {
+        multerReq.body.fileUrls = multerReq.files.map(
+          file =>
+            `${config.api_link_Image}/api/v1/houses/image/${file.filename}`,
+        );
+      }
+
+      return await HouseController.addImageToHouse(multerReq, res, next);
+    } catch (error) {
+      return next(error); // Forward the error to the error handler
+    }
+  },
+);
+
+router.delete(
+  '/deleteHouseImage/:imageId/:houseId',
+  auth(ENUM_USER_ROLE.OWNER),
+  HouseController.deleteImageFromHouse,
+);
+
+router.patch(
+  '/updateInfo/:id',
+  auth(ENUM_USER_ROLE.OWNER),
+  HouseController.updateHouse,
+);
+
 router.delete(
   '/delete/:id',
   auth(ENUM_USER_ROLE.OWNER),

@@ -56,10 +56,53 @@ const getHouseDetails = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const addImageToHouse = catchAsync(async (req: Request, res: Response) => {
+  const result = await HouseServices.addImageToHouse(req);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'House photo updated ',
+    data: result,
+  });
+});
+const deleteImageFromHouse = catchAsync(async (req: Request, res: Response) => {
+  const { imageId, houseId } = req.params;
+  const { id: userId } = req.user as any;
+
+  const result = await HouseServices.deleteImageFromHouse(
+    imageId,
+    houseId,
+    userId,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product photo updated ',
+    data: result,
+  });
+});
+
+const updateHouse = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const data = req.body;
+  const { id: userId, role: userRole } = req.user as any;
+  const result = await HouseServices.updateHouse(id, data, userId, userRole);
+
+  sendResponse<House>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'House updated successfully !!',
+    data: result,
+  });
+});
 export const HouseController = {
   createNew,
   deleteHouse,
   getAllHouse,
   getMyAllHouse,
   getHouseDetails,
+  updateHouse,
+  addImageToHouse,
+  deleteImageFromHouse,
 };
