@@ -15,4 +15,10 @@ router.get(
   auth(ENUM_USER_ROLE.OWNER),
   FeedbackController.getOwnersAllFeedback,
 );
+
+router.get(
+  '/tenantFeedback',
+  auth(ENUM_USER_ROLE.TENANT),
+  FeedbackController.getTenantAllFeedback,
+);
 export const FeedbackRoutes = router;
