@@ -40,9 +40,22 @@ const deleteProfilePicture = catchAsync(
     });
   },
 );
+const getOwnerDashboard = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.user as any;
+    const result = await UsersServices.getOwnerDashboard(id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'User dashboard retrieve done ',
+      data: result,
+    });
+  },
+);
 
 export const UsersController = {
   updateUserProfile,
   getMyProfile,
   deleteProfilePicture,
+  getOwnerDashboard,
 };

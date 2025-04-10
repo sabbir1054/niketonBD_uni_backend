@@ -13,7 +13,7 @@ const router = express.Router();
 type MulterRequest = Request & {
   files?: Express.Multer.File[];
 };
-router.post(
+router.patch(
   '/updateProfile',
   auth(ENUM_USER_ROLE.OWNER, ENUM_USER_ROLE.TENANT),
   FileUploadHelper.uploadProfile.single('file'),
@@ -71,5 +71,10 @@ router.delete(
   '/deleteProfilePicture',
   auth(ENUM_USER_ROLE.OWNER, ENUM_USER_ROLE.TENANT),
   UsersController.deleteProfilePicture,
+);
+router.get(
+  '/ownerDashboard',
+  auth(ENUM_USER_ROLE.OWNER),
+  UsersController.getOwnerDashboard,
 );
 export const UsersRoutes = router;

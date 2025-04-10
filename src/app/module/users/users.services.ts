@@ -114,8 +114,69 @@ const deleteProfilePicture = async (id: string) => {
   });
   return result;
 };
+
+const getOwnerDashboard = async (ownerId: string) => {
+  const result = await prisma.$transaction(async prisma => {
+    // Count total houses owned by this owner
+    const totalHouses = await prisma.house.count({
+      where: { ownerId },
+    });
+
+    // Count booked houses for this owner
+    const bookedHouses = await prisma.house.count({
+      where: {
+        ownerId,
+        status: 'BOOKED',
+      },
+    });
+
+    // Count available houses for this owner
+    const availableHouses = await prisma.house.count({
+      where: {
+        ownerId,
+        status: 'AVAILABLE',
+      },
+    });
+
+    // Count requests related to this owner's houses
+    const requestCounts = await prisma.request.groupBy({
+      by: ['requestStatus'],
+      where: { ownerId },
+      _count: { _all: true },
+    });
+
+    const requestStatusSummary = {
+      PENDING: 0,
+      ACCEPTED: 0,
+      CANCEL: 0,
+    };
+
+    requestCounts.forEach(item => {
+      requestStatusSummary[item.requestStatus] = item._count._all;
+    });
+
+    // Count feedbacks for this owner's houses
+    const totalFeedbacks = await prisma.feedback.count({
+      where: {
+        house: {
+          ownerId,
+        },
+      },
+    });
+    return {
+      totalHouses,
+      bookedHouses,
+      availableHouses,
+      requestStatusSummary,
+      totalFeedbacks,
+    };
+  });
+
+  return result;
+};
 export const UsersServices = {
   updateUserProfile,
   getMyProfile,
   deleteProfilePicture,
+  getOwnerDashboard,
 };
