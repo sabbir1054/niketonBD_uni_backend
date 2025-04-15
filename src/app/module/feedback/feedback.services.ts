@@ -51,6 +51,7 @@ const giveFeedback = async (
 const getOwnersAllFeedback = async (userId: string) => {
   const result = await prisma.feedback.findMany({
     where: { house: { ownerId: userId } },
+    include: { tenant: true, house: true },
   });
   return result;
 };
