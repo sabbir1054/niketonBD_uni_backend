@@ -62,7 +62,7 @@ model User {
 model HouseImage {
   id        String   @id @default(uuid())
   url       String
-  house     House    @relation(fields: [houseId], references: [id])
+  house     House    @relation(fields: [houseId], references: [id], onDelete: NoAction)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   houseId   String
@@ -96,15 +96,14 @@ model House {
 model Request {
   id            String        @id @default(uuid())
   requestStatus RequestStatus @default(PENDING)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  house     House    @relation(fields: [houseId], references: [id])
-  houseId   String
-  owner     User     @relation("owner_info", fields: [ownerId], references: [id])
-  ownerId   String
-  tenant    User     @relation("tenant_info", fields: [tenantId], references: [id])
-  tenantId  String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  house         House         @relation(fields: [houseId], references: [id], onDelete: NoAction)
+  houseId       String
+  owner         User          @relation("owner_info", fields: [ownerId], references: [id], onDelete: NoAction)
+  ownerId       String
+  tenant        User          @relation("tenant_info", fields: [tenantId], references: [id], onDelete: NoAction)
+  tenantId      String
 
   @@map("requests")
 }
@@ -115,10 +114,10 @@ model Feedback {
   comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  house     House    @relation(fields: [houseId], references: [id])
+  house     House    @relation(fields: [houseId], references: [id], onDelete: NoAction)
   houseId   String
-  tenant    User     @relation(fields: [tenantId], references: [id])
-  tenantId    String
+  tenant    User     @relation(fields: [tenantId], references: [id], onDelete: NoAction)
+  tenantId  String
 
   @@map("feedbacks")
 }
