@@ -19,12 +19,18 @@ const createRequest = async (tenantId: string, houseId: string) => {
   if (!isTenantExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Tenant info not found');
   }
-  const result = await prisma.request.create({
-    data: {
-      tenantId: tenantId,
-      ownerId: isHouseExist.ownerId,
-      houseId: isHouseExist.id,
-    },
+  const result = await prisma.$transaction(async prisma => {
+    const result = await prisma.request.create({
+      data: {
+        tenantId: tenantId,
+        ownerId: isHouseExist.ownerId,
+        houseId: isHouseExist.id,
+      },
+    });
+    await prisma.house.update({
+      where: { id: houseId },
+      data: { status: 'BOOKED' },
+    });
   });
   return result;
 };
@@ -102,7 +108,6 @@ const getTenantAllRequest = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { searchTerm, ...filtersData } = filters;
   const andConditions = [];
-
   if (searchTerm) {
     andConditions.push({
       OR: requestSearchableFields.map((field: any) => ({

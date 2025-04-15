@@ -33,7 +33,7 @@ const deleteHouse = catchAsync(async (req: Request, res: Response) => {
 const getAllHouse = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, houseFilterableFields);
   const options = pick(req.query, paginationFields);
-  const result = await HouseServices.getAllHouses(filters, options);
+  const result = await HouseServices.getAllHouses(filters,options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -62,6 +62,7 @@ const getHouseDetails = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
 const addImageToHouse = catchAsync(async (req: Request, res: Response) => {
   const result = await HouseServices.addImageToHouse(req);
   sendResponse(res, {
@@ -87,6 +88,7 @@ const deleteImageFromHouse = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 
 const updateHouse = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;

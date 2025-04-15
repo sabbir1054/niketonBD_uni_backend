@@ -1,3 +1,6 @@
 export const requestSearchableFields: string[] = [];
 
-export const requestFilterableFields: string[] = ['searchTerm', 'status'];
+export const requestFilterableFields: string[] = [
+  'searchTerm',
+  'requestStatus',
+];

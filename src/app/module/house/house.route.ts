@@ -64,7 +64,7 @@ router.patch(
       if (multerReq.files) {
         multerReq.body.fileUrls = multerReq.files.map(
           file =>
-            `${config.api_link_Image}/api/v1/houses/image/${file.filename}`,
+            `${config.api_link_Image}/api/v1/house/image/${file.filename}`,
         );
       }
 

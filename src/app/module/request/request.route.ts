@@ -18,7 +18,7 @@ router.get(
 router.get(
   '/tenantAllRequest',
   auth(ENUM_USER_ROLE.TENANT),
-  RequestController.getOwnerAllRequest,
+  RequestController.getTenantAllRequest,
 );
 router.get(
   '/details/:id',

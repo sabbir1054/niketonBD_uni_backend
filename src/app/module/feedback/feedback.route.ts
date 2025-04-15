@@ -6,7 +6,7 @@ import { FeedbackController } from './feedback.controller';
 const router = express.Router();
 
 router.post(
-  '/submit',
+  '/submit/:houseId',
   auth(ENUM_USER_ROLE.TENANT),
   FeedbackController.createFeedback,
 );
